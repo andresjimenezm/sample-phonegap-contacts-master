@@ -1,288 +1,46 @@
 <!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
 <html>
-	<head>
-		<title>File Sample</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-		<meta charset="utf-8">
-		<link href="styles/main.css" rel="stylesheet" type="text/css" />
-		<link href="styles/themes.css" rel="stylesheet" type="text/css" />        
-        <link href="styles/normalize.css" rel="stylesheet" type="text/css" />
-        <link href="font-awesome/font-awesome.css" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-		<script type="text/javascript" charset="utf-8" src="scripts/fileHelper.js"></script>
-		<script type="text/javascript" charset="utf-8" src="scripts/main.js"></script>
-	</head>
-	<body>
-		<div class="content">
-            <div class="preloader collapse">
-            <div class="loader">
-                <div class="round0 init"></div>
-                <div class="round1"></div>
-                <div class="round2"></div>
-                <div class="round3"></div>
-                <div class="round4"></div>
-                <div class="round5"></div>
-                <div class="round6"></div>
-                <div class="round7"></div>
-                <div class="round8"></div>
-                <div class="round9"></div>
-                <div class="round10"></div>
-            </div>    
-            </div>        
-        	<div class="controls">
-			<div class="sidebar">
-                <button class="fa-save" id="writeFileButton"><span>Save</span></button>
-				<button class="fa-file" data-tab="#file" id="readFileButton"><span>File</span></button>
-				<button class="fa-pencil" data-tab="#edit"><span>Edit</span></button>                
-				<button class="fa-paperclip"  data-tab="#insert" ><span>Insert</span></button>
-				<button class="fa-star"  data-tab="#style"><span>Style</span></button>
-				<button class="fa-wrench"  data-tab="#setting"><span>Setting</span></button>                                                
-			</div>
-                <div class="sidebar-sub">
-                    <section id="file" class="float">
-                        <span class="options-head">File</span>
-                        <hr>
-                        <div class="options">                  
-                        <span class="options-subhead">Project</span>
-                                <ul class="options-list">
-                                </ul>
-                        </div>                        
-                    </section>
-                    <section id="edit" class="float">
-                        <span class="options-head">Edit</span>
-                        <hr>
-                        <div class="options">                  
-                        <span class="options-subhead">Chroma</span>
-                                <ul class="options-list themes color-list">
-                                    <li data-attr="image"></li>
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>                                    
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>                                    
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>
-                                    <li data-attr=""></li>
-                                </ul>
-                        </div>                        
-                    </section>
-                    <section id="insert" class="float">
-                        <span class="options-head">Insert</span>
-                        <hr>
-                        <div class="options">                                      
-                        <span class="options-subhead">Tables</span>
-                                <ul class="options-list tables color-list">
-                                    <li data-attr="light-blue"></li>
-                                    <li data-attr="dull-blue"></li>
-                                    <li data-attr="light-orange"></li>
-                                    <li data-attr="dark-orange"></li>                                    
-                                    <li data-attr="light-pink"></li>
-                                    <li data-attr="light-dawn"></li>
-                                    <li data-attr="light-red"></li>                                    
-                                    <li data-attr="light-violet"></li>
-                                    <li data-attr="light-yellow"></li>
-                                    <li data-attr="light-green"></li>
-                                    <li data-attr="tainted-white"></li>
-                                </ul>                                                              
-                        <span class="options-subhead">Stock Photos</span>
-                                <ul class="options-list images">
-                                    <li data-attr="appbar.anchor.png"></li>
-                                    <li data-attr="appbar.at.png"></li>
-                                    <li data-attr="appbar.bug.png"></li>                                    
-                                    <li data-attr="appbar.cancel.png"></li>
-                                    <li data-attr="appbar.cards.heart.png"></li>
-                                    <li data-attr="appbar.cards.spade.png"></li>
-                                    <li data-attr="appbar.chess.bishop.png"></li>                                    
-                                    <li data-attr="appbar.chess.horse.png"></li>
-                                    <li data-attr="appbar.chess.king.png"></li>
-                                    <li data-attr="appbar.chess.pawn.png"></li>
-                                    <li data-attr="appbar.chess.queen.png"></li>
-                                    <li data-attr="appbar.chess.rook.png"></li>
-                                    <li data-attr="appbar.clothes.shirt.png"></li>
-                                    <li data-attr="appbar.clothes.tie.png"></li>
-                                    <li data-attr="appbar.currency.euro.png"></li>
-                                    <li data-attr="appbar.currency.grivna.png"></li>
-                                    <li data-attr="appbar.currency.pound.png"></li>
-                                    <li data-attr="appbar.currency.rubles.png"></li>
-                                </ul>
-                        <span class="options-subhead">Graphics</span>
-                                <ul class="options-list images">
-                                    <li data-attr="1.jpg"></li>
-                                    <li data-attr="2.png"></li>
-                                    <li data-attr="3.jpg"></li>
-                                    <li data-attr="4.png"></li>
-                                    <li data-attr="5.png"></li>
-                                </ul>                                    
-                          </div>
-                    </section>
-                    <section id="style" class="float">
-                        <span class="options-head">Style</span>
-                        <hr>
-                        <div class="options">                  
-                        <span class="options-subhead">Chroma</span>
-                                <ul class="options-list themes color-list">
-                                    <li data-attr="light-blue"></li>
-                                    <li data-attr="dull-blue"></li>
-                                    <li data-attr="light-orange"></li>
-                                    <li data-attr="dark-orange"></li>                                    
-                                    <li data-attr="light-pink"></li>
-                                    <li data-attr="light-dawn"></li>
-                                    <li data-attr="light-red"></li>
-                                    <li data-attr="dark-red"></li>                                    
-                                    <li data-attr="light-violet"></li>
-                                    <li data-attr="light-yellow"></li>
-                                    <li data-attr="light-green"></li>
-                                    <li data-attr="light"></li>
-                                    <li data-attr="tainted-white"></li>
-                                    <li data-attr="black"></li>
-                                    <li data-attr="light-grey"></li>
-                                </ul>
-    					<span class="options-subhead">Themes</span>
-                                <ul class="options-list themes color-list">
-                                    <li data-attr="greyblue"></li>
-                                    <li data-attr="blackmint"></li>
-                                    <li data-attr="blackorange"></li>
-                                    <li data-attr="forestyellow"></li>
-                                    <li data-attr="lilayellow"></li>
-                                    <li data-attr="asphaltorange"></li>
-                                    <li data-attr="skyblue"></li>
-                                    <li data-attr="dullbrown"></li>
-                                    <li data-attr="sandgray"></li>
-                                    <li data-attr="silvergreen"></li>
-                                    <li data-attr="silverblue"></li>
-                                    <li data-attr="cobaltorange"></li>
-                                    <li data-attr="mintbeige"></li>
-                                    <li data-attr="seayellow"></li>
-                                    <li data-attr="coralblue"></li>
-                                </ul>
-    					<span class="options-subhead">Picture</span>
-                                <ul class="options-list themes color-list">
-                                    <li data-attr="beach"></li>
-                                    <li data-attr="newyork"></li>
-                                    <li data-attr="paris"></li>
-                                    <li data-attr="seoul"></li>
-                                    <li data-attr="sydney"></li>
-                                    <li data-attr="valley"></li>
-                                </ul>
-                        <span class="options-subhead">Typography</span>
-                                <ul class="options-list fonts text-list">
-                                    <li data-attr="Impact"></li>
-                                    <li data-attr="Calibri"></li>
-                                    <li data-attr="Arial"></li>
-                                    <li data-attr="Palatino"></li>
-                                    <li data-attr="Century"></li>
-                                    <li data-attr="Segoe"></li>
-                                    <li data-attr="Roman"></li>
-                                    <li data-attr="Consolas"></li>
-                                    <li data-attr="Lucida"></li>
-                                    <li data-attr="Franklin"></li>
-                                </ul>
-                        </div>
-                    </section>
-                    <section id="setting" class="float">
-                        <span class="options-head">Setting</span>
-                        <hr>
-                        <div class="options">
-                        <span class="options-subhead">Project</span>
-                                <ul class="options-list">
-                                	<div class="set_up">
-                                    <label for="projectName">Project Name</label>
-                                    <input class="inputBox" id="fileNameInput" placeholder="File name" value="index.html"/>
-                                    <label for="author">Author</label>
-                                    <input placeholder="Dumerz" id="author" />
-                                    <label for="description">Description</label>
-                                    <input placeholder="This presentation is about Dumerz and friends" id="description" />                                    
-                                    </div>
-                                    <div class="results">
-                                        <div id="result" class="desc"></div>
-                                    </div>
-                                </ul>                        
-                        <span class="options-subhead">Transition</span>
-                                <ul class="options-list transition">
-                                    <li data-attr="fromLeft"></li>
-                                    <li data-attr="fromRight"></li>
-                                    <li data-attr="fromTop"></li>
-                                    <li data-attr="fromBottom"></li>
-                                    <li data-attr="fadeLeft"></li>
-                                    <li data-attr="fadeRight"></li>
-                                    <li data-attr="fadeTop"></li>
-                                    <li data-attr="scaleLeft"></li>
-                                    <li data-attr="scaleRight"></li>
-                                    <li data-attr="scaleTop"></li>
-                                    <li data-attr="scaleBottom"></li>
-                                    <li data-attr="scaleUp"></li>
-                                    <li data-attr="scaleDown"></li>
-                                    <li data-attr="fadeBottom"></li>
-                                    <li data-attr="fadeBottom"></li>
-                                    <li data-attr="fadeBottom">                                                                           
-                                </ul>                        
-                        </div>
-                    </section>
-                </div>			
-            <div class="main-container">
-            <div class="side">
-            </div>
-            <div class="dash">
-                <div class="basic">
-                    <ul class="in-basic">
-                        <button class="fa-undo" style="border-radius:0 0 0 15px"> </button>
-                        <button data-attr="italic" class="fa-italic"> </button>
-                        <button data-attr="bold" class="fa-bold"> </button>                            
-                        <button data-attr="left" class="fa-align-left"> </button>
-                        <button data-attr="center" class="fa2 float fa-align-center btn2"> </button>
-                        <button data-attr="right" class="fa2 float fa-align-right btn2"> </button>
-                        <button data-attr="justify" class="fa2 float fa-align-justify btn2"> </button>
-                        <button class="fa-list-ul"> </button>
-                        <button class="fa-plus-circle"> </button>
-                        <button class="fa-eraser"> </button>
-                        <button class="fa-expand" style="border-radius:0 0 15px 0"> </button>
-                    </ul>
-                </div> 
-			    <div class="slides" id="textInput">
-                    <section class="pres" data-anim="moveFromLeft">
-                        <section class="inner">
-                            <h1>Heading</h1>
-                                <p>Block of Text and Body</p>
-                        </section>
-                    </section>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Hello World</title>
+    </head>
+    <body>
+        <div class="app">
+            <h1>PhoneGap</h1>
+            <div id="deviceready" class="blink">
+                <p class="event listening">Connecting to Device</p>
+                <div class="event received">
+                  <p>Device is Ready</p>
                 </div>
-                <div class="controller">
-                	<ul class="moveto">
-                    	<div class="arrowLeft">
-                        </div>
-                    	<div class="arrowRight">
-                        </div>                        
-                    </ul>
-                </div>
-                <div class="costumize float">
-                <span>Object Size</span>
-                <input type="range" id="size" min="1" max="5" onChange="prester.changeFontSize()"><br>
-                <span>Object Rotate</span>
-                <input type="range" id="degree" min="0" max="360" value="0" onChange="prester.changeRotate()"><br>
-                <span>Object Width</span>
-                <input type="range" id="width" min="1" max="10" value="0" onChange="prester.changeWidth()"><br>
-                </div>
-            </div>            
-            </div>
-            <div class="notification">
-                <section><button id="close" class=" fa fa-times-circle-o close"></button></section>
+
+                <button onclick="app.takePicture();">Take Picture</button>
             </div>
         </div>
-		</div>
-        <script type="text/javascript" src="js/zepto.js"></script>
-        <script type="text/javascript" src="js/event.js"></script>
-        <script type="text/javascript" src="js/touch.js"></script> 
-        <script type="text/javascript" src="js/selector.js"></script>
-        <script type="text/javascript" src="js/fx.js"></script>
+        <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
-            prester.ready();
+            app.initialize();
         </script>
-	</body>
+    </body>
 </html>
