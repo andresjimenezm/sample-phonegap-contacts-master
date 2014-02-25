@@ -1,166 +1,178 @@
-// node tools/r.js -o tools/build.js
+var $loader = $('.preloader'),$sideBar = $('.sidebar'),$menu = $sideBar.children('button'),$sideSub = $('.sidebar-sub'),
+	$button = $('.in-basic > button'),$tabs = $sideSub.children('section'),$optLi = $('.options-list > li'),
+	$colorLi = $('.themes > li'),$img = $('.images').children('li'),$tables = $('.tables').children('li'),
+	$textLi = $('.text-list > li'),$transLi = $('.transition > li'),$fonts = $('.fonts > li'),
+	$btn = $('.in-basic').children('button'),$slides = $('.slides').children('section'),
+	$prester = $('.dash'),$page = $('.slides').html(),$anim = 'moveFromLeft',$all = $('.inner > *'),
+	$current = $('.pres > .inner'),$currentTheme = 'greyblue',$currentFont = 'Century',
+	$con = $('.controller'), cur = 0
 
-(function() {
-  define(function(require, exports, module) {
-    require('greensock/TweenMax.min')
-    require('vendor/swfobject')
-    var BaseView = require('app_base/view/BaseView'),
-        //node_tpl = require('text!templates/test.tpl'),
-        self,
-
-        // sample selector: edeldruk
-        
-        AppView = BaseView.extend({
-          el: '#samples',
-          initApp: function (app){
-            Backbone.history.start();
-            self = app
-            var nid = 281 // test: en
-            var nid = 322 // test: de
-            if(self.util.queryVars().nid){
-              nid = self.util.queryVars().nid
-            }
-            // get node
-            app.getJSONP('http://www.edeldruk.eu/?q=services/jsonp&method=node.get&nid='+nid+'&api_key=be62356c708411c39a4e167e4dd00222&callback=JsonWrapping',function(result){
-                self.node = result.data
-                // intro page render
-                self.renderNode(result)
-                $('.node .body').append('<img src="assets/images/view-samples-start.jpg"></img')
-                // get view
-                app.getJSONP(self.appSettings.viewFeed,app.renderApp)
-            })
-            app.onResize()
-          },
-          renderApp: function(result){
-            $('html').css('background','url() #000')  // remove spinner
-            $('#page-wrapper').css('visibility','visible').hide().fadeIn(1000)
-            var data = self.data = result.data
-            self.pagesData = []
-            self.renderTaxonomySelect(data)
-            self.start()
-          },
-          start: function(e){
-            //$(e.target).unbind('click',self.start)
-            $('#select').selectedIndex=1
-            $('#select').trigger('change')
-          },
-          renderNode: function(result){
-              var node = result.data
-              $('.node .title').html('<h2 class="title">'+node.title+'</h2>')
-              $('.node .body').html(node.body)
-              if(node.type=='sample'){
-                $('.node .body').html('<div>'+node['field_omschrijving_'+self.node.language][0].value+'</div><div id="ani"></div>')
-                $('#ani').html('')
-                _.each(node.field_image,function(image,i){
-                  if(image.filepath!=undefined){
-                    $('#ani').html('<img src="'+self.appSettings.drupalDomain+image.filepath+'"></img')
-                    $("#ani img").bind("load", function () { $(this).fadeIn() });
-                  }
-                })
-              }
-              TweenMax.from($('.node'),1,{css:{opacity:0}})
-          },
-          renderPager: function(data){
-             var i = 0
-             var max = 12
-             var pages = self.pages = []
-             var total, page
-             $(data).each(function(count,node){
-                page = Math.floor(count/max)
-                pages[page]=[]
-                node.page = page
-                total = count
-             })
-             $(data).each(function(count,node){
-               pages[node.page].push(node)
-             })
-             self.$el.find('#pager ul').html('')
-             if(pages.length > 1){
-             $(pages).each(function(count,node){
-                self.$el.find('#pager ul').append('<li class="pager-item" data-page="'+count+'">'+(count+1)+'</li>')
-                self.$el.find('#pager ul li').each(function(i){
-                   $(this).bind('click',function(){
-                      self.renderList(pages[$(this).attr('data-page')])
-                   })
-                })
-             })
-             }
-             self.renderList(pages[0])
-          },
-          renderList: function(data){
-            var $el = $('#samples nav')
-            $el.html('')
-            var h = '<ul id="samplelist">'
-            $(data).each(function(count,node){
-                var thumb = self.appSettings.drupalDomain+'sites/default/files/imagecache/sample_thumbnail/'+node.field_image[0].filepath
-                //h+='<li data-nid="'+node.nid+'">'+node.title+'</li>'
-                h+='<li data-nid="'+node.nid+'"><img src="'+thumb+'" data-nid="'+node.nid+'"></img></li>'
-            })
-            h+='</ul>'
-            $el.append(h)
-            $el.find('li').each(function(i){
-                $(this).bind('click',self.onListItemClick)
-                TweenMax.from($(this),0.5,{opacity:0,delay:i*0.2})
-            })
-            //self.renderNode({data:data[0]})
-          },
-          onListItemClick: function(e){
-              var nid = $(e.target).attr('data-nid')
-              // fixme: set active li class
-              $('#samples nav ul li').each(function(i){
-                 $(this).removeClass('selected').css('border','0px solid #000')
-                 if($(this).attr('data-nid')==nid){
-                    $(this).addClass('selected').css('border','0px solid #000')
-                 }
-              })
-              self.getJSONP('http://www.edeldruk.eu/?q=services/jsonp&method=node.get&nid='+nid+'&api_key=be62356c708411c39a4e167e4dd00222&callback=JsonWrapping',self.renderNode)
-          },
-          renderTaxonomySelect: function(data){
-            var tids= []
-            var names= []
-            var selectProvider = []
-            _.each(data,function(node,i){
-              for (var p in node.taxonomy) {
-                tids.push(node.taxonomy[p].tid);
-                names.push(node.taxonomy[p].name);
-              }
-            })
-            names=_.unique(names);
-            tids=_.unique(tids);
-            _.each(tids,function(tid,i){
-              selectProvider.push({label:names[i],data:tid})
-            })
-            var h = '<option value="none">Select a category</option>'
-            _.each(selectProvider,function(item,i){
-              h+='<option value="'+item.data+'">'+item.label+'</option>'
-            })
-            $('#select').html(h).bind('change',self.select_ChangeHandler)
-            self.selectProvider=selectProvider
-            self.tids = tids
-            if(tids.length==1){
-               $('#select').hide()
-            }
-          },
-          select_ChangeHandler: function(e){
-            $('#select option').each(function(i){
-              if($(this).attr('value')=='none'){$(this).remove()}
-            })
-            var listProvider = []
-            _.each(self.data,function(node,i){
-              for (var p in node.taxonomy) {
-                if(node.taxonomy[p].tid==self.tids[e.target.selectedIndex]){
-                  listProvider.push(node)
-                }
-              }
-            })
-            //self.log(listProvider)
-            self.renderPager(listProvider)
-          },
-          onResize: function(e){
-              self.sw = parseInt($(window).width())
-              self.sh = parseInt($(window).height());
-          }
-      });
-      return module.exports = AppView;
-  });
-}).call(this);
+var prester = {
+    ready: function(){
+        this.setUp()
+		this.controls()
+        this.show()
+    },
+    show: function(){
+        window.setTimeout(function(){$loader.addClass('trans')},5000)
+        window.setTimeout(function(){$loader.addClass('hidden'); prester.on($sideBar)},5400)
+    },
+    setUp: function(){
+		this.off()
+        $($sideBar.children('button')).each(function(){$(this).addClass(' button fa')})
+        $btn.each(function(){$(this).addClass(' btn2 float fa2')})
+        $optLi.each(function(){$(this).addClass($(this).data('attr'))})
+		$img.each(function(){$(this).attr('style','background-repeat:no-repeat;background-image:url(img/'+$(this).data('attr')+')')})
+		$tables.each(function(){$(this).html('<table border=1><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></table>')})
+        $textLi.each(function(){$(this).html('<h4>'+$(this).data('attr')+'</h4><span>type</span>')})
+        $transLi.each(function(){$(this).html('<h4>'+$(this).data('attr'))})
+		$prester.addClass($currentTheme)
+		$slides = $('.slides').children('section')
+		$('.costumize').hide()
+		prester.storyControl()
+    },
+    off:function(){
+		$tabs.each(function(){$(this).removeClass('active').addClass('inactive')})
+	},
+	on:function(x){
+		this.off();$(x).removeClass('inactive').addClass('active')
+	},
+	check:function(x){
+		$(x).hasClass('active')?this.off():this.on(x)
+	},
+	update : function(){
+		$all = $('.inner > *')
+		$all.each(function(){$(this).tap(function(){$current.removeClass('current').removeAttr('contenteditable');
+		$all.each(function(){$(this).doubleTap(function(){$('.costumize').show()})})
+		$current = $(this);
+	    $current.addClass('current')})})		
+		$all.each(function(){$(this).tap(function(){$(this).attr('contenteditable','true')})})
+		prester.storyControl()
+	},
+	addSlide : function(){
+		var $temp = $('.pres')
+		$temp.attr('class','prev').after($page)
+		$('.pres').addClass('moveFromRight');
+		$('.prev:last').addClass('moveToLeft').attr('style','display:block');
+				
+		this.update()
+	},
+	deleteSlide : function(){
+		$('.pres').addClass('scaleDown')
+		$('.pres').remove()
+		$('.prev:last').attr('class','pres')
+		$('.pres').addClass('moveFromLeft')
+	},
+	addBullet:function(){
+		$('.pres > .inner').append('<ul><li>Text Here</li><li></li></ul>');
+		prester.update();
+	},	
+	addImage:function(x){
+		$('.pres > .inner').append('<img/>');
+		var $temp = $('.inner > img:last');
+		$temp.attr('src','img/'+x.data('attr'));
+		$temp.attr('style','position:absolute');
+		this.update();
+	},	
+	addTable:function(x){
+		$('.pres > .inner').append('<table border=1><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></table>');
+		var $temp = $('.inner > table:last');
+		$temp.attr('class',x.data('attr'));
+		this.update();
+	},	
+	changeTheme:function(x){
+		$prester.addClass($(x).data('attr')).removeClass($currentTheme)
+		$textLi.addClass($(x).data('attr')).removeClass($currentTheme)	
+		$currentTheme = $(x).data('attr')
+	},
+	changeFont:function(x){
+		$prester.addClass($(x).data('attr')).removeClass($currentFont)
+		$currentFont = $(x).data('attr')
+	},
+	changeFontSize:function(x){
+		var $temp = $('#size').val()
+		$current.attr('style','font-size:'+$temp+'em')
+	},
+	changeWidth:function(x){
+		var $temp = $('#width').val()
+		$current.attr('style','height:'+$temp+'em')
+	},
+	changeRotate:function(x){
+		var $temp = $('#degree').val()
+		$current.attr('style','-webkit-transform:rotate('+$temp+'deg)')
+	},		
+	changeTrans:function(x,y){
+		$entrance = x;
+		$exit = y;
+	},
+	changeAttr:function(x){
+		$current.hasClass(x)? $current.removeClass(x):
+		$current.addClass(x)		
+	},
+	storyControl:function(){
+		$slides = $('.slides').children('section')
+		for(i=0;i<$slides.length;i++){
+			if($($slides[i]).hasClass('pres')){cur = i}
+			if(cur==0){$('.arrowLeft').attr('style','opacity:0')}
+			else{$('.arrowLeft').attr('style','opacity:1')}
+			if(cur==$slides.length-1){$('.arrowRight').attr('style','opacity:0')}
+			else{$('.arrowRight').attr('style','opacity:1')}
+		}
+	},										
+	controls:function(){
+		this.update()
+		$('#close').tap(function(){$('.notification').hide()})
+		$menu.each(function(){$(this).tap(function(){prester.check($(this).data('tab'))})})
+		$btn.each(function(){$(this).tap(function(){var $tmp = $(this).data('attr');prester.changeAttr($tmp)})})		
+		$prester.tap(function(){prester.off()})
+		$all.tap(function(){$('.costumize').hide()})
+		$tabs.swipeLeft(function(){prester.off()})
+		$('.fa-plus-circle').tap(function(){prester.addSlide()})
+		$('.in-basic > .fa-eraser').tap(function(){prester.deleteSlide()})
+		$('.fa-list-ul').tap(function(){prester.addBullet()})				
+		$tables.each(function(){$(this).tap(function(){prester.addTable($(this))})})
+		$img.each(function(){$(this).tap(function(){prester.addImage($(this))})})
+		$colorLi.each(function(){$(this).tap(function(){prester.changeTheme($(this))})})
+		$fonts.each(function(){$(this).tap(function(){prester.changeFont($(this))})})
+		$('.costumize').doubleTap(function(){$('.costumize').hide()})
+		$('.arrowLeft').tap(function(){
+			prester.storyControl()	
+			for(i=0;i<$slides.length;i++){
+					if(i<cur-1){
+						$($slides[i]).attr('class','prev')
+						}
+					if(i==cur-1){
+						$($slides[i]).attr('class','pres')
+						}
+					if(i==cur){
+						}						
+					if(i>=cur && cur>0){
+						$($slides[i]).attr('class','next')
+						}
+						$($slides[i]).attr('style','')
+				}
+				$('.pres').addClass('moveFromRight');
+				$('.next:first').addClass('scaleDown').attr('style','display:block');
+				$('.next').tap(function(){$('.next').hide()});
+				prester.update();
+			})
+		$('.arrowRight').tap(function(){
+			prester.storyControl()
+			for(i=0;i<$slides.length;i++){
+					if(i<=cur && i<$slides.length-1){
+						$($slides[i]).attr('class','prev')
+						}
+					if(i==cur+1){
+						$($slides[i]).attr('class','pres')
+						}
+					if(i>cur+1 && i<$slides.length-1){
+						$($slides[i]).attr('class','next')
+						}
+						$($slides[i]).attr('style','')						
+				}			
+				$('.pres').addClass('moveFromLeft');
+				$('.prev:last').addClass('scaleDown').attr('style','display:block');
+				prester.update();
+			})		
+	}
+};
